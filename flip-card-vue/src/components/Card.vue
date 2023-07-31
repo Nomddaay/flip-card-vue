@@ -1,39 +1,43 @@
 <template>
-    <div class="card">
-      <div 
-        class="card__inner" @click="onToggleFlipCard" 
-        :class="{ 'is-flipped': isFlipped }"
-      >
-        <div class="card__face card__face--front">
-          <div class="card__content"></div>
-        </div> 
-        <div class="card__face card__face--back">
-          <div 
-            class="card__content" 
-            :style="{ 
-              }"></div>
-        </div>
+  <div class="card">
+    <div 
+      class="card__inner" @click="onToggleFlipCard" 
+      :class="{ 'is-flipped': isFlipped }"
+    >
+      <div class="card__face card__face--front">
+        <div class="card__content"></div>
+      </div> 
+      <div class="card__face card__face--back">
+        <div 
+          class="card__content" 
+          :style="{ backgroundImage: `url(src/assets/${imgBackFaceUrl})` }"
+        ></div>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
+import { ref } from 'vue'; // Import ref from Vue 3's Composition API
+
 export default {
-props: {
-  imgBackFaceUrl: {
-    type: String,
-    required: true,
-  }
-},
-data() {
-  return {
-    isFlipped: false,
-  }
-},  
-  methods: {
-    onToggleFlipCard() {
-      this.isFlipped = !this.isFlipped;
+  props: {
+    imgBackFaceUrl: {
+      type: String,
+      required: true,
     }
+  },
+  setup(props) {
+    const isFlipped = ref(false); // Use ref from Composition API
+
+    const onToggleFlipCard = () => {
+      isFlipped.value = !isFlipped.value;
+    };
+
+    return {
+      isFlipped,
+      onToggleFlipCard
+    };
   }
 }
 </script>
