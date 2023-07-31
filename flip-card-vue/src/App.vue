@@ -1,47 +1,53 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+<script>
+  import MainScreen from './components/MainScreen.vue';
+  import InteractScreen from './components/InteractScreen.vue';
+
+  import { shuffled } from './utils/array'
+
+  export default {
+    name: 'App',
+    data() {
+      return {
+        settings: {
+          totalOfBlocks: 0,
+          cardsContext: [],
+          startedAt: null,
+
+        },
+        statusMatch: "default",
+      }
+    },
+    components: {
+      MainScreen,
+      InteractScreen,
+    },
+    methods: {
+      onHandBeforeStart(config) {
+        console.log("running", config);
+        this.settings.totalOfBlocks = config.totalOfBlocks;
+
+        const firstCards = Array.from(
+          { length: this.settings.totalOfBlocks / 2 },
+          (_, i) => i + 1,
+        );
+        const secondCards = [...firstCards];
+        const cards = [...firstCards, ...secondCards];
+        console.log(cards);
+        this.settings.cardsContext = shuffled(shuffled(shuffled(shuffled(cards))));
+        this.settings.startedAt = new Date().getTime();
+
+        this.statusMatch = "match";
+      }
+    }
+  }
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  <main-screen v-if="statusMatch === 'default'" @onStart="onHandBeforeStart($event)"/>
+  <interact-screen 
+    v-if="statusMatch === 'match'" 
+    :cardsContext="settings.cardsContext"
+  />
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-}
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
-</style>
